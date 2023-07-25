@@ -2,8 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-const ProductItem = ({ product }) => {
-  console.log(product);
+const ProductItem = ({ product, addToCart }) => {
   return (
     <div className="card text-center">
       <Link
@@ -26,7 +25,11 @@ const ProductItem = ({ product }) => {
       </Link>
       <p className="mb-2">{product.brand}</p>
       <p className="mb-2">$ {product.price}</p>
-      <button className="primary-button mb-2" type="button">
+      <button
+        className="primary-button mb-2"
+        type="button"
+        onClick={() => addToCart && addToCart(product)}
+      >
         Add to cart
       </button>
     </div>
