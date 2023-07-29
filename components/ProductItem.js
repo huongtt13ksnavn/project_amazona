@@ -9,14 +9,13 @@ const ProductItem = ({ product, addToCart }) => {
         className="items-center flex justify-center"
         href={`/product/${product.slug}`}
       >
-        <div className="w-80 h-80 shadow relative">
-          <Image
-            alt={product.name}
-            src={product.image}
-            className=""
-            fill={true}
-          />
-        </div>
+        <Image
+          src={product.image}
+          alt={product.name}
+          width={298}
+          height={298}
+          priority={true}
+        />
       </Link>
       <Link href={`/product/${product.slug}`}>
         <div className="flex flex-col items-center justify-center p-5">

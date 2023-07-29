@@ -38,7 +38,7 @@ const ProductScreen = () => {
             src={product.image}
             width={640}
             height={640}
-            layout="reponsive"
+            priority={true}
           />
         </div>
         <div>

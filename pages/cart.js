@@ -5,6 +5,7 @@ import Link from 'next/link';
 import React, { useContext } from 'react';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 
 const CartScreen = () => {
   const router = useRouter();
@@ -16,6 +17,12 @@ const CartScreen = () => {
   const removeItemHandler = (item) => {
     dispatch({ type: 'CART_REMOVE_ITEM', payload: item });
   };
+
+  const updateCartHandler = (item, value) => {
+    const quantity = Number(value);
+    dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantity } });
+  };
+
   return (
     <Layout title={'Shopping cart'}>
       <h1 className="mb-4 text-xl">Shopping Cart</h1>
@@ -45,13 +52,28 @@ const CartScreen = () => {
                           alt={item.name}
                           width={50}
                           height={50}
-                          layout="reponsive"
+                          priority={true}
                         />
                         &nbsp;
                         {item.name}
                       </Link>
                     </td>
-                    <td className="p-5 text-right">{item.quantity}</td>
+                    <td className="p-5 text-right">
+                      <select
+                        name="quantity"
+                        value={item.quantity}
+                        id="quantity"
+                        onChange={(e) =>
+                          updateCartHandler(item, e.target.value)
+                        }
+                      >
+                        {[...Array(item.countInStock).keys()].map((item) => (
+                          <option key={item + 1} value={item + 1}>
+                            {item + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
                     <td className="p-5 text-right">$ {item.price}</td>
                     <td className="p-5 text-center">
                       <button onClick={() => removeItemHandler(item)}>
@@ -76,7 +98,7 @@ const CartScreen = () => {
               <li>
                 <button
                   onClick={() => router.push('/shipping')}
-                  className="primary-button w-full"
+                  className="primary-button w-full mt-4"
                 >
                   Check out
                 </button>
@@ -89,4 +111,4 @@ const CartScreen = () => {
   );
 };
 
-export default CartScreen;
+export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });
