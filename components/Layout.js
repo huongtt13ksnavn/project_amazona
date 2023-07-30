@@ -1,18 +1,25 @@
 import { Store } from '@/utils/Store';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Menu } from '@headlessui/react';
 import React, { useContext, useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DropdownLink from './DropdownLink';
 
 const Layout = ({ children, title }) => {
   const { status, data: session } = useSession();
-  const { state } = useContext(Store);
+  const { state, dispatch } = useContext(Store);
   const [countCartItems, setCountCartItems] = useState(0);
   useEffect(() => {
     setCountCartItems(state.cart.cartItems.reduce((a, c) => a + c.quantity, 0));
   }, [state.cart.cartItems]);
+
+  const logoutClickHandler = async () => {
+    dispatch({ type: 'CART_RESET' });
+    signOut({ callbackUrl: '/login' });
+  };
 
   return (
     <>
@@ -41,7 +48,38 @@ const Layout = ({ children, title }) => {
               {status === 'loading' ? (
                 'Loading'
               ) : session?.user ? (
-                session.user.name
+                <Menu as={'div'} className={'relative inline-block'}>
+                  <Menu.Button className={'text-blue-600'}>
+                    {session.user.name}
+                  </Menu.Button>
+                  <Menu.Items
+                    className={
+                      'absolute right-0 w-56 origin-top-right shadow-lg bg-white'
+                    }
+                  >
+                    <Menu.Item>
+                      <DropdownLink className="dropdown-link" href={'/profile'}>
+                        Profile
+                      </DropdownLink>
+                    </Menu.Item>
+                    <Menu.Item>
+                      <DropdownLink
+                        className="dropdown-link"
+                        href={'/order-history'}
+                      >
+                        Order history
+                      </DropdownLink>
+                    </Menu.Item>
+                    <Menu.Item>
+                      <a
+                        onClick={logoutClickHandler}
+                        className="dropdown-link w-full"
+                      >
+                        Log out
+                      </a>
+                    </Menu.Item>
+                  </Menu.Items>
+                </Menu>
               ) : (
                 <Link href={'/login'}>Login</Link>
               )}
