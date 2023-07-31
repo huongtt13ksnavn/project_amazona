@@ -6,6 +6,7 @@ import React, { useContext } from 'react';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+import { toast } from 'react-toastify';
 
 const CartScreen = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const CartScreen = () => {
   const updateCartHandler = (item, value) => {
     const quantity = Number(value);
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantity } });
+    toast.success('Product updated to the cart');
   };
 
   return (
