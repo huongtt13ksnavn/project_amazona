@@ -1,6 +1,7 @@
 import CheckoutWizard from '@/components/CheckoutWizard';
 import Layout from '@/components/Layout';
 import { Store } from '@/utils/Store';
+import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -15,12 +16,15 @@ const ShippingScreen = () => {
   const { state, dispatch } = useContext(Store);
   const { cart } = state;
   const { shippingAddress } = cart;
+  const router = useRouter();
 
   const submitHandler = ({ fullname, address, city, postalcode, country }) => {
     dispatch({
       type: 'SAVE_SHIPPING_ADDRESS',
       payload: { fullname, address, city, postalcode, country },
     });
+
+    router.push('/payment');
   };
 
   useEffect(() => {
@@ -126,7 +130,9 @@ const ShippingScreen = () => {
         </div>
 
         <div className="mb-4 flex justify-center">
-          <button className="primary-button">Next</button>
+          <button className="primary-button" type="submit">
+            Next
+          </button>
         </div>
       </form>
     </Layout>
