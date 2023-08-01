@@ -6,7 +6,6 @@ import { Menu } from '@headlessui/react';
 import React, { useContext, useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import DropdownLink from './DropdownLink';
 
 const Layout = ({ children, title }) => {
   const { status, data: session } = useSession();
@@ -58,17 +57,14 @@ const Layout = ({ children, title }) => {
                     }
                   >
                     <Menu.Item>
-                      <DropdownLink className="dropdown-link" href={'/profile'}>
+                      <Link className="dropdown-link" href={'/profile'}>
                         Profile
-                      </DropdownLink>
+                      </Link>
                     </Menu.Item>
                     <Menu.Item>
-                      <DropdownLink
-                        className="dropdown-link"
-                        href={'/order-history'}
-                      >
+                      <Link className="dropdown-link" href={'/order-history'}>
                         Order history
-                      </DropdownLink>
+                      </Link>
                     </Menu.Item>
                     <Menu.Item>
                       <a

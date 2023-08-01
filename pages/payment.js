@@ -22,9 +22,10 @@ const PaymentScreen = () => {
 
   useEffect(() => {
     if (!shippingAddress.address) {
-      return router.push('/shipping');
+      router.push('/shipping');
+    } else {
+      setSelectedPaymentMethod(paymentMethod);
     }
-    setSelectedPaymentMethod(paymentMethod);
   }, [shippingAddress.address, paymentMethod, router]);
 
   return (

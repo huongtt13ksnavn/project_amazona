@@ -56,6 +56,7 @@ const LoginScreen = () => {
             name="email"
             type="email"
             autoFocus
+            autoComplete="username"
             {...register('email', {
               required: 'Email is required',
               pattern: {
@@ -75,6 +76,7 @@ const LoginScreen = () => {
             className="w-full"
             name="password"
             type="password"
+            autoComplete="current-password"
             {...register('password', {
               required: 'Password is required',
               minLength: { value: 6, message: 'Password is more than 5 char' },
