@@ -1,0 +1,41 @@
+import User from '@/models/User';
+import db from '@/utils/db';
+import bcryptjs from 'bcryptjs';
+
+const handler = async (req, res) => {
+  if (req.method !== 'POST') {
+    return;
+  }
+
+  const { name, email, password } = req.body;
+
+  if (
+    !name ||
+    !email ||
+    !email.includes('@') ||
+    !password ||
+    password.trim().length < 5
+  ) {
+    res.status(422).json({ message: 'Validation error' });
+    return;
+  }
+
+  await db.connect();
+
+  const existingUser = await User.findOne({ email: email });
+  if (existingUser) {
+    res.status(422).json({ message: 'User exist already!' });
+    await db.disconnect();
+    return;
+  }
+
+  const newUser = new User({
+    ...req.body,
+    password: bcryptjs.hashSync(password),
+  });
+
+  const user = await newUser.save();
+  await db.disconnect();
+  res.status(201).send({ ...user, message: 'Created user!' });
+};
+export default handler;

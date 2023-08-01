@@ -1,13 +1,14 @@
 import Layout from '@/components/Layout';
-import Link from 'next/link';
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { signIn, useSession } from 'next-auth/react';
 import { getError } from '@/utils/error';
-import { toast } from 'react-toastify';
+import axios from 'axios';
+import { signIn, useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const { redirect } = router.query;
@@ -24,16 +25,28 @@ const LoginScreen = () => {
     formState: { errors },
   } = useForm();
 
-  const submitHandler = async ({ email, password }) => {
+  const submitHandler = async ({ name, email, password }) => {
     try {
-      const result = await signIn('credentials', {
-        redirect: false,
+      const result = await axios.post('/api/auth/signup', {
+        name,
         email,
         password,
       });
       if (result.error) {
         console.log(result.error);
         toast.error(result.error);
+        return;
+      }
+
+      const resultLogin = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      });
+      if (resultLogin.error) {
+        console.log(result.error);
+        toast.error(result.error);
+        return;
       }
     } catch (error) {
       console.log(error);
@@ -41,13 +54,30 @@ const LoginScreen = () => {
     }
   };
   return (
-    <Layout title="Login">
+    <Layout title="Register">
       <form
         action="post"
         className="mx-auto max-w-screen-md"
         onSubmit={handleSubmit(submitHandler)}
       >
-        <h1 className="mb-4 text-xl">Login</h1>
+        <h1 className="mb-4 text-xl">Register</h1>
+        <div className="mb-4">
+          <label htmlFor="name">Name</label>
+          <input
+            id="name"
+            className="w-full"
+            name="name"
+            type="name"
+            autoFocus
+            autoComplete="username"
+            {...register('name', {
+              required: 'Name is required',
+            })}
+          />
+          {errors.name && (
+            <span className="text-red-500">{errors.name.message}</span>
+          )}
+        </div>
         <div className="mb-4">
           <label htmlFor="email">Email</label>
           <input
@@ -87,17 +117,39 @@ const LoginScreen = () => {
           )}
         </div>
         <div className="mb-4">
+          <label htmlFor="confirm-password">Confirm Password</label>
+          <input
+            id="confirm-password"
+            className="w-full"
+            name="confirm-password"
+            type="password"
+            autoComplete="current-password"
+            {...register('confirmPassword', {
+              required: 'Confirm Password is required',
+              minLength: {
+                value: 6,
+                message: 'Confirm Password is more than 5 char',
+              },
+            })}
+          />
+          {errors.confirmPassword && (
+            <span className="text-red-500">
+              {errors.confirmPassword.message}
+            </span>
+          )}
+        </div>
+        <div className="mb-4">
           <button className="primary-button" type="submit">
-            Login
+            Register
           </button>
         </div>
-        <div className="mb-4">Don&apos;t have an account? &nbsp;</div>
-        <Link className="text-blue-500" href={'/register'}>
-          Register
+        <div className="mb-4">Have an account? &nbsp;</div>
+        <Link className="text-blue-500" href={'/login'}>
+          Login
         </Link>
       </form>
     </Layout>
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;
