@@ -112,7 +112,7 @@ const OrderDetails = () => {
     return actions.order.capture().then(async (details) => {
       try {
         dispatch({ type: 'PAY_REQUEST' });
-        const { data } = await axios.put(`/api/orders/${orderId}/pay`, details);
+        await axios.put(`/api/orders/${orderId}/pay`, details);
         dispatch({ type: 'PAY_SUCCESS' });
       } catch (error) {
         dispatch({ type: 'PAY_FAIL', payload: getError(error) });
